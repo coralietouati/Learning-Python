@@ -1,5 +1,5 @@
 
-################################## BASIC #################################################################
+################################## LES CONTENEURS: LISTES, DICO ... #################################################################
 # Operations
     print(10/3)
     print(10.0/3)
@@ -39,11 +39,11 @@ adresse = """
 print(adresse)
 
 
-# List
+#### LES LISTES
 list  = [] # create an empty list
 list.append(1) # add   /!\ objet d'orgine est directement modifier avec les listes
 list.append(2)
-list
+list.inset(0,100) # ajouter une valeur avec un index precis
 list.insert(1,'a')
 list2 = [4,6,8]
 list3 =list + list2
@@ -51,6 +51,8 @@ list.extend(list2) # directly modify list
 list += list2 # same as extend
 del list[0]
 list.remove('a')  # La méthode remove ne retire que la première occurrence de la valeur trouvée dans la liste !
+
+
 
 # Trick to show the elements of the list
 for elt in list:
@@ -65,7 +67,10 @@ for elt in enumerate(list):
     list = chaine.split() # transform the string in a list
     " ".join(list) # transform the list in chain
 
-
+# Trier
+    prenoms = ["Jacques", "Laure", "Andre", "Victoire", "Albert", "Sophie"]
+    prenoms.sort() # modifie l'object et tri par ordre alphabetique
+    sorted(prenoms) # renvoie un nouvel objet
 
 
     # Les compréhensions de liste (« list comprehensions » en anglais) sont un moyen de filtrer ou modifier une liste très simplement.
@@ -129,7 +134,44 @@ for elt in enumerate(list):
     parametres = {"sep": " >> ", "end": " -\n"}
     print("Voici", "un", "exemple", "d'appel", ** parametres)
 
+    #TRI
+    etudiants = [
+        ("Clement", 14, 16),
+        ("Charles", 12, 15),
+        ("Oriane", 14, 18),
+        ("Thomas", 11, 12),
+        ("Damien", 12, 15), ]
+    # tir avec fct landa 5plus lent)
+    sorted(etudiants,key= lambda column : column[2])
+    # plus rapide avec l'opertor
+    from operator import itemgetter
+    sorted(etudiants, key= itemgetter(2))
 
+
+    # Remplacer un dico par une class
+class Etudiant:
+
+    def __init__(self, prenom, age, moyenne):
+        self.prenom = prenom
+        self.age = age
+        self.moyenne = moyenne
+
+    def __repr__(self):
+        return "Etudiant {} age= {} moyenne = {}".format(self.prenom,self.age,self.moyenne)
+
+etudiants = [
+    Etudiant("Clément", 14, 16),
+    Etudiant("Charles", 12, 15),
+    Etudiant("Oriane", 14, 18),
+    Etudiant("Thomas", 11, 12),
+    Etudiant("Damien", 12, 15),
+]
+
+print(etudiants[1])
+sorted(etudiants, key = lambda etudiant : etudiant.moyenne, reverse=True) # la variable est l'objet et renvoie l'attribut
+from operator import attrgetter
+sorted(etudiants, key= attrgetter('moyenne','age'))
+# astuce: pour trier selon deux critère opposés, tri selon le deuxieme puis le premier --> garde l'ordre grace prorpirete de stabiite
 
 
     ### SET
@@ -303,6 +345,7 @@ Total_bat_input = df[(df['storage (kW)'] > 0)]['storage (kW)'].sum()
 def __setattr__(self, nom_attr,val_attr):
     """Méthode appelée quand on fait objet.nom_attr = val_attr.
                 On se charge d'enregistrer l'objet"""
+    print('on a changer la methode de la classe mere objet')
     object.__setattr__(self,nom_attr,val_attr)
     self.enregistrer()
 
@@ -358,7 +401,8 @@ class Personne:
     # si on definit que l'assesseur alors l'attribut ne peut etre modifie
 
 
-moi = Personne('Titi', 'Coralie')
+moi = Personne('Titi', 'Coralie') # moi est une instance de la classe Personne
+
 moi.nom
 moi.prenom
 moi.age
@@ -424,6 +468,7 @@ class TableauNoir:
         self.surface = ""
 
 
+
 t = TableauNoir()
 t.ecrire("hello")
 t.lire()
@@ -481,3 +526,277 @@ class Duree:
     def __str__(self):
         """Affichage un peu plus joli de nos objets"""
         return "{0:02}:{1:02}".format(self.min, self.sec)
+
+    def __add__(self, new):
+        """Additioner une durée: object1 + duree en sec"""
+        newduree = Duree() # il faut constuire l'object pour avoir l'attibut min et sec!
+        newduree.min = self.min
+        newduree.sec = self.sec
+        newduree.sec += new
+        if newduree.sec >= 60 :
+            newduree.sec = newduree.sec % 60
+            newduree.min += newduree.sec // 60
+        return  newduree
+
+    def __radd__(self, new):
+        """ methode special dans l'auttre sens, on ajout un r !
+        On renvoie add dans l'autre sens (ici laddition marche dans les deux sens)"""
+        return self + new
+
+    def __iadd__(self, new):
+        """methode speciale pour surchar l'operateur +=
+        Dans ce cas on travaille directement sur self"""
+        self.sec += new
+        if self.sec >60:
+            self.sec = self.sec % 60
+            self.min += self.min // 60
+        return self
+
+    def __eq__(self, autreduree):
+        """" methode = compare les minutes et sec """
+        if self.min == autreduree.min and self.sec == autreduree.sec:
+            return True
+        else:
+            return False
+
+
+
+
+
+duree= Duree(1,30)
+duree2= Duree(1,30)
+print(duree)
+print(duree + 10) # appelle __ad__
+print(70 + duree) # appelle __radd__
+duree += 20 # appelle __iadd__
+print(duree)
+
+
+class Temp:
+    """Classe contenant un attribut temporaire"""
+
+    def __init__(self):
+        self._attribut1 = "x"
+        self._attribut2 = "y"
+        self._attributtemp = 5
+
+    # option 1:modifie le dictionnaire des attributs avant la sérialisation. Le dictionnaire des attributs enregistré
+    # est celui que nous avons modifié avec la valeur de notre attribut temporaire à0.
+    def __getstate__(self):
+        """Renvoie le dico des attribut à serialiser"""
+        dic_attribut = dict(self.__dict)
+        dic_attribut['attributtemp'] = 0
+        return dic_attribut
+
+    # option 2:on modifie le dictionnaire d'attributs après la désérialisation
+    def __setstate__(self, dict_attr):
+        """Méthode appelée lors de la désérialisation de l'objet"""
+        dict_attr["attribut_temporaire"] = 0
+        self.__dict__ = dict_attr
+
+
+
+
+# a completer avec la fonction pickel !!!
+
+tempo = Temp()
+dir(tempo)
+__getstate__(tempo)
+
+
+# L'héritage de classe
+
+
+class Agent(Personne):
+    """ Herite de la classe Personne"""
+    def __init__(self, nom, prenom, matricule):
+        Personne.__init__(self, nom, prenom)
+        self.matricule = matricule
+    def __str__(self): # si on ne definit cette methode, celle de la classe Personne est utilisée
+        return('hello Agent {}'.format(self.matricule))
+
+agent1 = Agent('bond', 'james', '007')
+print(agent1)
+
+issubclass(Personne,Agent) #FALSE
+issubclass(Agent,Personne) # TRUE
+isinstance(agent1, Personne)
+
+class MaClasseHeritee(MaClasseMere1, MaClasseMere2): # cherche les methode dans la class 1 puis 2
+
+
+# Creation de generateur
+
+
+def intervalle(borne_inf, borne_sup):
+    """Générateur parcourant la série des entiers entre borne_inf et borne_sup.
+    Note: borne_inf doit être inférieure à borne_sup"""
+
+    borne_inf += 1
+    while borne_inf < borne_sup:
+        yield borne_inf
+        borne_inf += 1
+
+def intervalle(inf,sup):
+    """Generateur qui peut sauter des valeurs"""
+    print('rentre dans le generator')
+    inf += 1
+    while inf <= sup:
+        print('yield')
+        valeur_rescue = (yield inf) # on peut envoyer une valeur a notre generateur par send
+        if valeur_rescue is not None: # generator a recu une valeur
+            inf = valeur_rescue
+        else:
+            inf += 1
+            print ('incremente')
+
+generator = intervalle(10,20)
+for i in generator:
+    if i == 15:
+        generator.send(18) # on passe directement de 5 à 8
+    print(i)
+
+
+
+##### TP
+
+class Dico():
+    """ dico ordone"""
+
+    def __init__(self):
+        print('on passe par le constructeur')
+        self.cles = []
+        self.values = []
+
+    def __str__(self):
+        """affichage avec print"""
+        return repr(self)
+
+    def __repr__(self):
+        """affichage sans print"""
+        message = "{"
+        premier=True
+        for i in range(0,len(self.cles)):
+            if not premier:
+                message += ", "
+            message += str(self.cles[i]) + ": "+ str( self.values[i])
+            premier=False
+        message += '}'
+        return message
+
+    def __delitem__(self, key):
+        """delete the key and value associated"""
+        if key not in self.cles:
+            raise KeyError(' la cle {} nesxite pas!'.format(key))
+        else:
+            index = self.cles.index(key)
+            del self.values[index]
+            del self.cles[index]
+
+    def __setitem__(self, key, value):
+        """add an item, erase any existing key with same name"""
+        if key in self.cles:
+            index = self.cles.index(key)
+            del self.values[index]
+            del self.cles[index]
+            # --> comment remplacer par del key???
+        self.cles.append(key)
+        self.values.append(value)
+
+    def __getitem__(self, key):
+        index = self.cles.index(key)
+        return self.values[index]
+
+    def __contains__(self, key):
+        """check if the key is in the dico"""
+        # if key in self.cles:
+        #     return True
+        # else:
+        #     return False
+
+        # plus simple:
+        return key in self.cles
+
+    def __len__(self):
+        """Taille du dico"""
+        return len(self.cles)
+
+    def keys(self):
+        L=[]
+        for i in range(0,len(self.cles)):
+            L.append(self.cles[i])
+        return L
+    keys = staticmethod(keys)
+
+    def value(self):
+        return list(self.values)
+
+    def items(self):
+        """Renvoie un générateur contenant les couples (cle, valeur)"""
+        for i, cle in enumerate(self.cles):
+            val = self.values[i]
+        yield (cle, val)
+
+
+    def __add__(self, other):
+        if type(other) is not type(self):
+            raise TypeError ("Le format du dico a ajouter nest pas conforme")
+
+        self.cles.append(other.cles)
+        self.values.append(other.values)
+
+
+
+
+    def __iter__(self):
+        """Méthode de parcours de l'objet. On renvoie l'itérateur des clés"""
+        return iter(self.cles) # on renvoie l'iterateur des cles
+
+
+
+
+
+
+fruits = Dico()
+fruits
+fruits['pomme'] = 52
+fruits["poire"] = 34
+fruits["prune"] = 128
+fruits["melon"] = 15
+print(fruits)
+fruits
+fruits['pomme']
+del fruits["melon"]
+'pomme' in fruits
+len(fruits)
+
+fruits.keys(fruits)
+fruits.value(fruits)
+for cle in fruits:
+    print(cle)
+
+fruits2 = Dico()
+fruits2['fraises'] = 52
+fruits + fruits2
+
+
+
+################################### DECORATEUR ####################
+
+
+# utilisation 1: Renvoie une fonction de substitution
+def obsolete(fonction_origine):
+    """Décorateur levant une exception pour noter que la fonction_origine
+    est obsolète"""
+
+    def fonction_modifiee():
+        raise RuntimeError("la fonction {0} est obsolète !".format(fonction_origine))
+
+    return fonction_modifiee
+
+
+@obsolete
+def salut():
+    print('salut')
+
+#

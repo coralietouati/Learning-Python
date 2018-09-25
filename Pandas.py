@@ -16,6 +16,7 @@ data = {'name': ['Jason', 'Molly', 'Tina', 'Jake', 'Amy'],
         'postTestScore': [25, 94, 57, 62, 70]}
 df2 = pd.DataFrame(data, columns = ['name', 'age', 'preTestScore', 'postTestScore'])
 
+
 # Affichage des info de la df
     print('df2.shape')
     df.head() # le debut de la base de données
@@ -133,6 +134,9 @@ load = load[load['local_dt'].str.contains('2016-02-29') == False]
 
 # open a database from an excel
 pv = pd.read_excel("file.xlsx", sheetname = 'Summary of Results', skiprows=107)
+
+# dowload
+df.to_csv('excel.csv')
 
 # Renomer un file
 # import os

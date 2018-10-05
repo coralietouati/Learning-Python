@@ -71,7 +71,7 @@ df2 = pd.DataFrame(data, columns = ['name', 'age', 'preTestScore', 'postTestScor
         #iloc gets rows (or columns) at particular positions in the index (so it only takes integers)
 
 
-#Restrictions avec les conditions - Les requêtes
+#FILTRER
     print(df2[( df2['age'] > 30 )])
     print( df2.loc[ df2['age'] > 30 , :])
     print( df2['age'] > 30 )
@@ -79,6 +79,9 @@ df2 = pd.DataFrame(data, columns = ['name', 'age', 'preTestScore', 'postTestScor
 
     colonnes = ['name','age']
     print(df2.loc[ ( (df2.age > 30) & (df2.preTestScore >10) ), colonnes])
+
+    # filter a partir dune liste
+d[d.ID.isin(ID_keep)]
 
     # change value of some rows only
 d.loc[ (d['week'] == 52) & (d['month'] == 1 ), 'week'] = 0
@@ -88,6 +91,8 @@ d[d['week']==0].groupby(['day']).mean()
 
     # fin the max of a column for a given row
 min(d.loc[1:200,'day'])
+
+
 
 #Calculs récapitulatifs - Croisement des variables
     # Tableaux croisé dynamique
@@ -141,3 +146,10 @@ df.to_csv('excel.csv')
 # Renomer un file
 # import os
 os.rename('solar1.csv', str(site_id) + '_solar.csv')
+
+
+# dealing with nan values
+d.isnull()
+
+# Give value with condition without boucle for
+d['Week']= np.where(d.Day>=5,'Weekend','Week')

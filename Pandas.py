@@ -153,3 +153,6 @@ d.isnull()
 
 # Give value with condition without boucle for
 d['Week']= np.where(d.Day>=5,'Weekend','Week')
+
+# better way of giving a vlue bassed on other columns value
+d.loc[d.ID == id, 'max'] = 'maxval'

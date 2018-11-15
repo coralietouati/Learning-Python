@@ -10,7 +10,8 @@
     print(2!=3)
     print(2==3)
 
-# Stringm
+# String
+#Les méthodes de la classe str, sans exception, travaillent sur la chaîne et renvoient la chaîne modifiée, sans modifier la chaîne d'origine
 
 chaine = str()
 chaine = "TEST"
@@ -52,8 +53,6 @@ list += list2 # same as extend
 del list[0]
 list.remove('a')  # La méthode remove ne retire que la première occurrence de la valeur trouvée dans la liste !
 
-
-
 # Trick to show the elements of the list
 for elt in list:
     print(elt)
@@ -70,8 +69,14 @@ for elt in enumerate(list):
 # Trier
     prenoms = ["Jacques", "Laure", "Andre", "Victoire", "Albert", "Sophie"]
     prenoms.sort() # modifie l'object et tri par ordre alphabetique
+    # seul methode qui modifie l4indice de la liste
     sorted(prenoms) # renvoie un nouvel objet
 
+# Fonctions et lites
+l=[1,2,3]
+def f(l1,l2,l3):
+    print(l1)
+f(*l)
 
     # Les compréhensions de liste (« list comprehensions » en anglais) sont un moyen de filtrer ou modifier une liste très simplement.
     [nb * nb for nb in liste]
@@ -799,4 +804,23 @@ def obsolete(fonction_origine):
 def salut():
     print('salut')
 
-#
+# Expression regulieres
+import re
+if re.search('^cha', 'chat') is not None:
+    print('trouve!')
+
+numero = ""
+
+expression = "^0[0-9]([ .-]?[0-9]{2}){4}$"
+while re.search(expression, numero) is None:
+    numero = input('Numero de tel:')
+
+re.sub('o','a','hello')
+texte = """
+nom='Task1', id=8
+nom='Task2', id=31
+nom='Task3', id=127"""
+
+print(re.sub(r"id=", r"id[", texte))
+print(re.sub(r"id=(?P<id>[0-9])", r"id=\g<id>", texte)) #(?P<nomdugroupe>) puis pour appler \g<nomdugroupe>
+print(re.sub(r"id=(?P<id>[0-9]+)", r"id[\g<id>]", texte))

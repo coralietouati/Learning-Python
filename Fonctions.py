@@ -46,6 +46,9 @@ def cluster( d, metric,feature,k,clustername):
     sns.lineplot(x='Hour', y=metric, hue=feature, data=moyenne_c,  palette=list(dfclusters['color']), alpha=0.3, legend=False).set_title(clustername)
     clustering = moyenne_c.groupby(['Hour',clustername]).mean().reset_index()
     sns.lineplot(x='Hour', y=metric, hue=clustername, palette=color[:k], data=clustering, linewidth=3)
+    plt.figure(4)
+    sns.lineplot(x='Hour', y=metric, hue=feature, data=moyenne_c, palette=list(dfclusters['color']),
+                 legend=False).set_title(clustername)
     print(dfclusters)
     return dfclusters
 
